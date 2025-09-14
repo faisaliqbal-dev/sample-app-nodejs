@@ -47,7 +47,7 @@ pipeline {
 
  stage('docker login') {
     steps {
-        withCredentials([usernamePassword(credentialsId: '47ddd6a4-6cde-4be9-98de-ff4b64b0ffec', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+        withCredentials([usernamePassword(credentialsId: '47ddd6a4-6cde-4be9-98de-ff4b64b0ffe', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
             sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
             sh "docker build -t nodejs:latest -f Dockerfile ."
             sh "docker tag nodejs:latest ${DOCKER_USER}/nodejs-demo:latest"
@@ -69,7 +69,7 @@ pipeline {
         stage('Docker Deploy') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: '47ddd6a4-6cde-4be9-98de-ff4b64b0ffec', 
+                    credentialsId: '47ddd6a4-6cde-4be9-98de-ff4b64b0ffe', 
                     passwordVariable: 'DOCKER_PASS', 
                     usernameVariable: 'DOCKER_USER')]) {
                     
