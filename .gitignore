@@ -1,4 +1,5 @@
 /Terraform/.terraform
 /Terraform/provider.tf
 /Terraform/terraform.tfvars
-
+id_rsa
+id_rsa.pub
