@@ -1,7 +1,7 @@
 # Node.js CI/CD Project
 
 ## Description
-This project implements a complete **CI/CD pipeline** for a **Node.js application** using **Jenkins**, **Docker**, and **SonarQube**. The pipeline automates code integration, build, testing, containerization, and deployment.  
+This project implements a complete **CI/CD pipeline** for a **Node.js application** using **Jenkins**, **Docker**, and **SonarQube**,**Terraform**. The pipeline automates code integration, build, testing, containerization, and deployment.  
 
 ## Key Features
 - **Version Control:** Source code managed using **Git**.  
