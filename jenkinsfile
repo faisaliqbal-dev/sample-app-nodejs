@@ -1,0 +1,84 @@
+#CI Pipeline
+pipeline {
+    agent any
+    tools {
+        nodejs "node"
+    }
+     environment {
+                SCANNER_HOME = tool 'sonar-scanner'
+    }
+    stages {
+        stage('Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/faisaliqbal-dev/sample-app-nodejs.git'
+            }
+        }
+        stage('Install') {
+            steps {
+                sh "npm install"
+            }
+        }
+        stage('Build') {
+            steps {
+                  sh '''#!/bin/bash
+                  npm run build || echo "no build step"
+                    '''
+          }
+      }
+         stage('Run') {
+            steps {
+                sh "npm run &"
+            }
+        }
+   stage('SonarQube Analysis') {
+    steps {
+        sh '''
+            $SCANNER_HOME/bin/sonar-scanner \
+              -Dsonar.projectKey=nodejs-demo \
+              -Dsonar.projectName=nodejs-demo \
+              -Dsonar.sources=. \
+              -Dsonar.host.url=http://13.235.99.212:9000/ \
+              -Dsonar.login=squ_a19763942bd4fe8d4e5a5e0aced244ada726d130 \
+              -Dsonar.language=js \
+              -Dsonar.sourceEncoding=UTF-8
+        '''
+    }
+}
+
+ stage('docker login') {
+    steps {
+        withCredentials([usernamePassword(credentialsId: '47ddd6a4-6cde-4be9-98de-ff4b64b0ffec', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+            sh "echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin"
+            sh "docker build -t nodejs:latest -f Dockerfile ."
+            sh "docker tag nodejs:latest ${DOCKER_USER}/nodejs-demo:latest"
+            sh "docker push ${DOCKER_USER}/nodejs-demo:latest"
+        }
+     }
+    }
+
+  }
+}
+
+
+# CD Pipeline
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Docker Deploy') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: '47ddd6a4-6cde-4be9-98de-ff4b64b0ffec', 
+                    passwordVariable: 'DOCKER_PASS', 
+                    usernameVariable: 'DOCKER_USER')]) {
+                    
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker run -d --name node-js-app -p 3000:3000 mohammedfaisaliqbal/nodejs-demo:latest
+                    '''
+                }
+            }
+        }
+    }
+}
