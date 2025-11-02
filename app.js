@@ -4,7 +4,7 @@ const port = process.env.PORT || 3000;
 
 // Home route
 app.get('/', (req, res) => {
-  res.send('🚀 Hello from AWS DevOps Demo Applications!');
+  res.send('🚀 Hello from AWS DevOps Demo Application!');
 });
 
 // Healthcheck route (useful for load balancer / k8s)
